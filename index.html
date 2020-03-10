@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Slides</title>
+  <title>Objetivos de Desenvolvimento Sustentável</title>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@next/dist/ionic/ionic.esm.js"></script>
   <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core@next/dist/ionic/ionic.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@next/css/ionic.bundle.css"/>
@@ -19,21 +19,23 @@
     <ion-header [translucent]="true">
       <ion-toolbar color="primary">
         <ion-title>
-          Objetivos de Desenvolvimento Sustentável
+          ODS
         </ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content fullscreen class="ion-padding" scroll-y="false">
-      <ion-slides>
+      <ion-slides id="slides" pager="true">
 
         <ion-slide>
           <div class="slide">
             <h2>Pergunta</h2>
           </div>
+          <ion-button id="slide1-next">Avançar</ion-button>
         </ion-slide>
 
         <ion-slide>
           <div id="grid" class="square-container"></div>
+          <ion-button id="slide2-next">Avançar</ion-button>
         </ion-slide>
 
         <ion-slide>
@@ -223,6 +225,10 @@
       'Zona Rural'
     ];
 
+    slides = document.getElementById('slides');
+    document.getElementById('slide1-next').addEventListener('click', function(){slides.slideNext()});
+    document.getElementById('slide2-next').addEventListener('click', function(){slides.slideNext()});
+
     shuffle(odsList);
     orderList = [];
     for(let ods of odsList){
@@ -236,7 +242,7 @@
         //grid.innerHTML += '<ion-row style="height: 15%">';
         //for(let j = 0; j < 3 && ods_count < 17; j++){
           //grid.innerHTML += '<ion-col size="4" style="background-color: ' + odsList[ods_count].cor + '">' + odsList[ods_count].titulo + '</ion-col>';
-          grid.innerHTML += '<div class="square"><div class="content" style="background-color: ' + odsList[ods_count].cor + '">' + odsList[ods_count].titulo + '</div></div>';
+          grid.innerHTML += '<div class="square"><div class="content" style="background-color: ' + odsList[ods_count].cor + '" onclick="selecionaOds(this, ' + ods_count + ')">' + odsList[ods_count].titulo + '</div><ion-icon class="hide" name="checkmark-circle-outline"></ion-icon></div>';
           ods_count++;
         //}
         //grid.innerHTML += '</ion-row>';
@@ -254,6 +260,7 @@
         ods_ordem: orderList,
         endereco: bairro_select.value
       }
+      postResposta(resposta);
     });
 
     function shuffle(array) {
@@ -275,12 +282,31 @@
       return array;
     }
 
-    function locationIpLookUp() {
+    function selecionaOds(square, ods_number){
+      let icon = square.parentElement.getElementsByTagName('ion-icon')[0];
+      if(odsList[ods_number].selecionado == false) {
+        odsList[ods_number].selecionado = true;
+        icon.classList.remove('hide');
+      } else {
+        odsList[ods_number].selecionado = false;
+        icon.classList.add('hide');
+      }
+    }
+
+    function getSelecionados(){
+      selecionadoList = [];
+      for(ods of odsList){
+        if(ods.selecionado){
+          selecionadoList.push(ods.id);
+        }
+      }
+      return selecionadoList;
+    }
+
+    function getLocationIpLookUp() {
       const locationPromise = new Promise((resolve, reject) => {
         fetch('http://ip-api.com/json').then(response => {
-          response.json().then(jsonResponse => {
-            resolve(jsonResponse.values);
-          });
+            resolve(response.json());
         }, err => {
           reject(err);
         });
@@ -288,7 +314,7 @@
       return locationPromise;
     }
 
-    function locationApi() {
+    function getLocationApi() {
       const locationPromise = new Promise((resolve, reject) => {
         if('geolocation' in navigator){
           navigator.geolocation.getCurrentPosition(geolocation => {
@@ -304,6 +330,25 @@
       return locationPromise;      
     }
 
+    async function postResposta(resposta){
+      let locationIp = await getLocationIpLookUp();
+      //let locationApi = await getLocationApi();
+      let params = new URLSearchParams();
+      //params.append('ods_selecionado', resposta.ods_selecionado);
+      params.append('ods_selecionado', getSelecionados());
+      params.append('ods_ordem', resposta.ods_ordem);
+      params.append('endereco', resposta.endereco);
+      params.append('locationIp', 'lat: ' + locationIp.lat + ' lon: ' + locationIp.lon);
+      //params.append('locationIp', 'lat');
+      //params.append('locationApi', JSON.stringify(locationApi));
+      params.append('locationApi', 'ainda não está funcionando');
+      postRequest = fetch('https://script.google.com/macros/s/AKfycbzEdyY_pR4muarZmMyJRfn0dUTIhoTJrFy4rJzrK_E8SoZXaDo/exec', {method: 'POST', redirect: 'follow', body: params});
+      response = await postRequest;
+      jsonResponse = await response.json();
+      window.location.href = './sucesso.html';
+      return jsonResponse;
+    }
+
   </script>
 
   <style>
@@ -315,8 +360,17 @@
       overflow: auto;
     }
 
+    ion-icon {
+      position: absolute;
+      bottom: 10px;
+    }
+
     * {
       box-sizing: border-box;
+    }
+
+    .hide {
+      visibility: hidden;
     }
 
     .square-container {
