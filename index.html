@@ -30,12 +30,16 @@
           <div class="slide">
             <h2>Pergunta</h2>
           </div>
-          <ion-button id="slide1-next">Avançar</ion-button>
+          <div class="center-content">
+            <ion-button id="slide1-next">Avançar</ion-button>
+          </div>
         </ion-slide>
 
         <ion-slide>
           <div id="grid" class="square-container"></div>
-          <ion-button id="slide2-next">Avançar</ion-button>
+          <div class="slide2-button">
+            <ion-button id="slide2-next">Avançar</ion-button>
+          </div>
         </ion-slide>
 
         <ion-slide>
@@ -44,7 +48,9 @@
             <ion-label>Bairro</ion-label>
             <ion-select id="bairroSelect" ok-text="Ok" cancel-text="Cancelar"></ion-select>
           </ion-item>
-          <ion-button id="enviarButton" color="primary">Enviar Resposta</ion-button>
+          <div class="center-content">
+            <ion-button id="enviarButton" color="primary">Enviar Resposta</ion-button>
+          </div>
         </ion-slide>
 
       </ion-slides>
@@ -287,9 +293,11 @@
       if(odsList[ods_number].selecionado == false) {
         odsList[ods_number].selecionado = true;
         icon.classList.remove('hide');
+        square.parentElement.style.backgroundColor = "gray";
       } else {
         odsList[ods_number].selecionado = false;
         icon.classList.add('hide');
+        square.parentElement.style.backgroundColor = "";
       }
     }
 
@@ -363,6 +371,8 @@
     ion-icon {
       position: absolute;
       bottom: 10px;
+      right: 10px;
+      color: white;
     }
 
     * {
@@ -378,21 +388,35 @@
     }
 
     .square {
-      width: calc(100% / 3);
+      width: 30vmin;
       float: left;
       position: relative;
-      padding-bottom: calc(100% / 3);
+      padding-bottom: 30vmin;
     }
 
     .square .content {
-        width: calc(100% - 3px);
-        height: calc(100% - 3px);
+        width: calc(100% - 8px);
+        height: calc(100% - 8px);
         margin: 2px;
         padding: 6px;
         position: absolute;
         color: white;
         font-size: medium;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
+    }
+
+    .center-content {
+      position: absolute;
+      bottom: 30px;
+      left: 0px;
+      right: 0px;
+    }
+
+    .slide2-button {
+      position: relative;
+      top: 30px;
+      margin-bottom: 30px;
+      clear: both;
     }
 
     .swiper-slide {
