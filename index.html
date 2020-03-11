@@ -21,6 +21,11 @@
         <ion-title>
           ODS
         </ion-title>
+        <ion-buttons slot="secondary">
+          <ion-button onclick="changeGrid()">
+            <ion-icon slot="icon-only" name="swap-horizontal-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-content fullscreen class="ion-padding" scroll-y="false">
@@ -355,6 +360,28 @@
       jsonResponse = await response.json();
       window.location.href = './sucesso.html';
       return jsonResponse;
+    }
+
+    var grid_row_size = 3;
+
+    function changeGrid(){
+      let squares = document.getElementsByClassName('square');
+      if(grid_row_size == 3) {
+        grid_row_size = 4;
+        for(square of squares){
+          square.style.width = '22vmin';
+          square.style.paddingBottom = '22vmin';
+          square.getElementsByClassName('content')[0].style.fontSize = 'x-small';
+        }
+      } else {
+        grid_row_size = 3;
+        for(square of squares){
+          square.style.width = '30vmin';
+          square.style.paddingBottom = '30vmin';
+          square.getElementsByClassName('content')[0].style.fontSize = 'medium';
+        }
+      }
+      
     }
 
   </script>
