@@ -48,11 +48,20 @@
         </ion-slide>
 
         <ion-slide>
-          <h2>Selecione seu bairro</h2>
-          <ion-item>
-            <ion-label>Bairro</ion-label>
-            <ion-select id="bairroSelect" ok-text="Ok" cancel-text="Cancelar"></ion-select>
-          </ion-item>
+          <div>
+            <h2>Selecione sua cidade</h2>
+            <ion-item>
+              <ion-label>Cidade</ion-label>
+              <ion-select id="cidadeSelect" ok-text="Ok" cancel-text="Cancelar"></ion-select>
+            </ion-item>
+          </div>
+          <div id="divBairro" class="hide">
+            <h2>Selecione seu bairro</h2>
+            <ion-item>
+              <ion-label>Bairro</ion-label>
+              <ion-select id="bairroSelect" ok-text="Ok" cancel-text="Cancelar"></ion-select>
+            </ion-item>
+          </div>
           <div class="center-content">
             <ion-button id="enviarButton" color="primary">Enviar Resposta</ion-button>
           </div>
@@ -168,6 +177,13 @@
       }
     ];
 
+    const cidadesList = [
+      'Santa Maria',
+      'Cachoeira do Sul',
+      'Frederico Westphalen',
+      'Palmeira das Missões'
+    ];
+
     const bairroList = [
       'Agroindustrial',
       'Arroio Grande',
@@ -260,6 +276,19 @@
       //}
     }
 
+    let cidade_select = document.getElementById('cidadeSelect');
+    for(let cidade of cidadesList){
+      cidade_select.innerHTML += '<ion-select-option value="' + cidade + '">' + cidade + '</ion-select-option>';
+    }
+
+    cidade_select.addEventListener('ionChange', function(){
+      if(cidade_select.value == 'Santa Maria') {
+        document.getElementById('divBairro').classList.remove('hide');
+      }else{
+        document.getElementById('divBairro').classList.add('hide');
+      }
+    });
+
     let bairro_select = document.getElementById('bairroSelect');
     for(let bairro of bairroList){
       bairro_select.innerHTML += '<ion-select-option value="' + bairro + '">' + bairro + '</ion-select-option>';
@@ -267,11 +296,20 @@
 
     document.getElementById('enviarButton').addEventListener('click', function(){
       let resposta = {
-        ods_selecionado: '',
+        ods_selecionado: getSelecionados(),
         ods_ordem: orderList,
-        endereco: bairro_select.value
+        cidade: cidade_select.value,
+        bairro: bairro_select.value
       }
-      postResposta(resposta);
+      if(resposta.ods_selecionado.length < 1){
+        presentAlert('Selecione os objetivos que você acha mais importante');
+      }else if(!resposta.cidade){
+        presentAlert('Selecione sua cidade');
+      }else if(resposta.cidade == 'Santa Maria' && !resposta.bairro){
+        presentAlert('Selecione seu bairro');
+      }else{
+        postResposta(resposta);
+      }
     });
 
     function shuffle(array) {
@@ -344,22 +382,35 @@
     }
 
     async function postResposta(resposta){
+      const loading = document.createElement('ion-loading');
+      loading.message = 'Enviando resposta...';
+      loading.duration = 5000;
+      document.body.appendChild(loading);
+      await loading.present();
       let locationIp = await getLocationIpLookUp();
       //let locationApi = await getLocationApi();
       let params = new URLSearchParams();
       //params.append('ods_selecionado', resposta.ods_selecionado);
-      params.append('ods_selecionado', getSelecionados());
+      params.append('ods_selecionado', resposta.ods_selecionado);
       params.append('ods_ordem', resposta.ods_ordem);
-      params.append('endereco', resposta.endereco);
+      params.append('cidade', resposta.cidade);
+      params.append('bairro', resposta.bairro);
       params.append('locationIp', 'lat: ' + locationIp.lat + ' lon: ' + locationIp.lon);
       //params.append('locationIp', 'lat');
       //params.append('locationApi', JSON.stringify(locationApi));
       params.append('locationApi', 'ainda não está funcionando');
       postRequest = fetch('https://script.google.com/macros/s/AKfycbzEdyY_pR4muarZmMyJRfn0dUTIhoTJrFy4rJzrK_E8SoZXaDo/exec', {method: 'POST', redirect: 'follow', body: params});
-      response = await postRequest;
-      jsonResponse = await response.json();
-      window.location.href = './sucesso.html';
-      return jsonResponse;
+      try {
+        response = await postRequest;
+        jsonResponse = await response.json();
+        await loading.dismiss();
+        window.location.href = './sucesso.html';
+        return jsonResponse;
+      }catch(err) {
+        await loading.dismiss();
+        presentAlert('Erro ao enviar resposta');
+        return err;
+      }
     }
 
     var grid_row_size = 3;
@@ -382,6 +433,17 @@
         }
       }
       
+    }
+
+    function presentAlert(message) {
+      const alert = document.createElement('ion-alert');
+      //alert.header = 'Alert';
+      //alert.subHeader = 'Subtitle';
+      alert.message = message;
+      alert.buttons = ['OK'];
+
+      document.body.appendChild(alert);
+      return alert.present();
     }
 
   </script>
