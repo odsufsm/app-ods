@@ -356,7 +356,7 @@
 
     function getLocationIpLookUp() {
       const locationPromise = new Promise((resolve, reject) => {
-        fetch('http://ip-api.com/json').then(response => {
+        fetch('https://ipapi.co/json/').then(response => {
             resolve(response.json());
         }, err => {
           reject(err);
@@ -395,7 +395,7 @@
       params.append('ods_ordem', resposta.ods_ordem);
       params.append('cidade', resposta.cidade);
       params.append('bairro', resposta.bairro);
-      params.append('locationIp', 'lat: ' + locationIp.lat + ' lon: ' + locationIp.lon);
+      params.append('locationIp', 'lat: ' + locationIp.latitude + ' lon: ' + locationIp.longitude);
       //params.append('locationIp', 'lat');
       //params.append('locationApi', JSON.stringify(locationApi));
       params.append('locationApi', 'ainda não está funcionando');
