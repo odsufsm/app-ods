@@ -3,102 +3,119 @@ var odsList = [
         id: '1',
         titulo: 'Erradicação da Pobreza',
         cor: '#e5233b',
+        image: 'images/01.webp',
         selecionado: false
     },
     {
         id: '2',
         titulo: 'Fome Zero e Agricultura Sustentável',
         cor: '#dca63a',
+        image: 'images/02.webp',
         selecionado: false
     },
     {
         id: '3',
         titulo: 'Saúde e Bem-estar',
         cor: '#4c9e38',
+        image: 'images/03.webp',
         selecionado: false
     },
     {
         id: '4',
         titulo: 'Educação de Qualidade',
         cor: '#c51a2d',
+        image: 'images/04.webp',
         selecionado: false
     },
     {
         id: '5',
         titulo: 'Igualdade de Gênero',
         cor: '#ff3a20',
+        image: 'images/05.webp',
         selecionado: false
     },
     {
         id: '6',
         titulo: 'Água Potável e Saneamento',
         cor: '#27bde2',
+        image: 'images/06.webp',
         selecionado: false
     },
     {
         id: '7',
         titulo: 'Energia Limpa e Acessível',
         cor: '#fdc30a',
+        image: 'images/07.webp',
         selecionado: false
     },
     {
         id: '8',
         titulo: 'Trabalho Decente e Crescimento Econômico',
         cor: '#a21a42',
+        image: 'images/08.webp',
         selecionado: false
     },
     {
         id: '9',
         titulo: 'Indústria, Inovação e Infraestrutura',
         cor: '#fe6925',
+        image: 'images/09.webp',
         selecionado: false
     },
     {
         id: '10',
         titulo: 'Redução das Desigualdades',
         cor: '#de1768',
+        image: 'images/10.webp',
         selecionado: false
     },
     {
         id: '11',
         titulo: 'Cidades e Comunidades Sustentáveis',
         cor: '#fd9d24',
+        image: 'images/11.webp',
         selecionado: false
     },
     {
         id: '12',
         titulo: 'Consumo e Produção Responsáveis',
         cor: '#c08b2f',
+        image: 'images/12.webp',
         selecionado: false
     },
     {
         id: '13',
         titulo: 'Ação Contra a Mudança Global do Clima',
         cor: '#3f7e45',
+        image: 'images/13.webp',
         selecionado: false
     },
     {
         id: '14',
         titulo: 'Vida na Água',
         cor: '#0997d9',
+        image: 'images/14.webp',
         selecionado: false
     },
     {
         id: '15',
         titulo: 'Vida Terrestre',
         cor: '#56c02a',
+        image: 'images/15.webp',
         selecionado: false
     },
     {
         id: '16',
         titulo: 'Paz, Justiça e Instituições Eficazes',
         cor: '#00689d',
+        image: 'images/16.webp',
         selecionado: false
     },
     {
         id: '17',
         titulo: 'Parcerias e Meio de Implementação',
         cor: '#1a486a',
+        image: 'images/17.webp',
         selecionado: false
     }
 ];
@@ -195,7 +212,13 @@ while (ods_count < 17) {
     //grid.innerHTML += '<ion-row style="height: 15%">';
     //for(let j = 0; j < 3 && ods_count < 17; j++){
     //grid.innerHTML += '<ion-col size="4" style="background-color: ' + odsList[ods_count].cor + '">' + odsList[ods_count].titulo + '</ion-col>';
-    grid.innerHTML += '<div class="square"><div class="content" style="background-color: ' + odsList[ods_count].cor + '" onclick="selecionaOds(this, ' + ods_count + ')">' + odsList[ods_count].titulo + '</div><ion-icon class="hide" name="checkmark-circle-outline"></ion-icon></div>';
+    grid.innerHTML += 
+        `<div class="square">
+            <div class="content" style="background-color:${odsList[ods_count].cor}" onclick="selecionaOds(this, ${ods_count})">
+                <img src="${odsList[ods_count].image}" alt="${odsList[ods_count].titulo}"></img>
+            </div>
+            <ion-icon class="hide" name="checkmark-circle-outline"></ion-icon>
+        </div>`;
     ods_count++;
     //}
     //grid.innerHTML += '</ion-row>';
