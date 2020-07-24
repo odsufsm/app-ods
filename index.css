@@ -69,6 +69,13 @@ ion-icon {
     margin-top: 2.8rem;
 }
 
+.swiper-pagination {
+    position: fixed;
+    bottom: 0px;
+    padding-bottom: 3px;
+    pointer-events: none;
+}
+
 b {
     font-weight: 500;
 }
